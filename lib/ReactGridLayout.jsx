@@ -15,7 +15,7 @@ import {
   moveElement,
   noop,
   synchronizeLayoutWithChildren,
-  withLayoutItem
+  withLayoutItem,
 } from "./utils";
 
 import { calcXY } from "./calculateUtils";
@@ -92,6 +92,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     layout: [],
     margin: [10, 10],
     isBounded: false,
+    isDetachable: false,
     isDraggable: true,
     isResizable: true,
     allowOverlap: false,
@@ -548,6 +549,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
       containerPadding,
       rowHeight,
       maxRows,
+      isDetachable,
       isDraggable,
       isResizable,
       isBounded,
@@ -567,6 +569,10 @@ export default class ReactGridLayout extends React.Component<Props, State> {
       typeof l.isDraggable === "boolean"
         ? l.isDraggable
         : !l.static && isDraggable;
+    const detachable =
+      typeof l.isDetachable === "boolean"
+        ? l.isDetachable
+        : !l.static && isDetachable;
     const resizable =
       typeof l.isResizable === "boolean"
         ? l.isResizable
@@ -592,6 +598,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
         onResizeStart={this.onResizeStart}
         onResize={this.onResize}
         onResizeStop={this.onResizeStop}
+        isDetachable={detachable}
         isDraggable={draggable}
         isResizable={resizable}
         isBounded={bounded}
@@ -757,7 +764,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
 
     this.removeDroppingPlaceholder();
 
-    this.props.onDrop(layout, item, e);
+    this.props.onDrop(layout, item, e);    
   };
 
   render(): React.Element<"div"> {

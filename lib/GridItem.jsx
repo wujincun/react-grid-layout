@@ -57,6 +57,7 @@ type Props = {
   rowHeight: number,
   maxRows: number,
   isDraggable: boolean,
+  isDetachable: boolean,
   isResizable: boolean,
   isBounded: boolean,
   static?: boolean,
@@ -335,7 +336,7 @@ export default class GridItem extends React.Component<Props, State> {
    */
   mixinDraggable(
     child: ReactElement<any>,
-    isDraggable: boolean
+    isDraggable: boolean,
   ): ReactElement<any> {
     return (
       <DraggableCore
@@ -621,6 +622,7 @@ export default class GridItem extends React.Component<Props, State> {
       w,
       h,
       isDraggable,
+      isDetachable,
       isResizable,
       droppingPosition,
       useCSSTransforms
@@ -657,7 +659,9 @@ export default class GridItem extends React.Component<Props, State> {
         ...this.props.style,
         ...child.props.style,
         ...this.createStyle(pos)
-      }
+      },
+      draggable: isDetachable,
+
     });
 
     // Resizable support. This is usually on but the user can toggle it off.

@@ -167,5 +167,12 @@ module.exports = [
     paragraphs: [
       "This demonstrates how to overlap grid items."
     ]
+  },
+  {
+    title: "Multiple Tier",
+    source: "multiple-tier",
+    paragraphs: [
+      "This demonstrates how to move bwtween multiple grid items"
+    ]
   }
 ];
