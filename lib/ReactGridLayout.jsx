@@ -15,6 +15,7 @@ import {
   moveElement,
   noop,
   synchronizeLayoutWithChildren,
+  withinLayout,
   withLayoutItem,
 } from "./utils";
 
@@ -129,6 +130,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
       compactType(this.props),
       this.props.allowOverlap
     ),
+    isDrop:false,
     mounted: false,
     oldDragItem: null,
     oldLayout: null,
@@ -280,6 +282,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     if (!l) return;
 
     // Create placeholder (display only)
+    // 区分哪个栅格，转换成对应的x，y
     const placeholder = {
       w: l.w,
       h: l.h,
@@ -328,12 +331,17 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     { e, node }
   ) => {
     if (!this.state.activeDrag) return;
-
     const { oldDragItem } = this.state;
     let { layout } = this.state;
     const { cols, preventCollision, allowOverlap } = this.props;
     const l = getLayoutItem(layout, i);
     if (!l) return;
+    // 判断出离开某一个，进入某一个
+    if(!withinLayout(node.parentElement, e)){
+      console.log('out'); 
+      this.props.outLayout({i,x,y,w:l.w,h:l.h})
+    }
+    // 找到layout中的所有元素进行遍历，看移到了哪里
 
     // Move the element here
     const isUserAction = true;
@@ -654,7 +662,7 @@ export default class ReactGridLayout extends React.Component<Props, State> {
     } = this.props;
     // Allow user to customize the dropping item or short-circuit the drop based on the results
     // of the `onDragOver(e: Event)` callback.
-    const onDragOverResult = onDropDragOver?.(e);
+    const onDragOverResult = onDropDragOver?.(e) || this.state.isDrop;
     if (onDragOverResult === false) {
       if (this.state.droppingDOMNode) {
         this.removeDroppingPlaceholder();
@@ -764,7 +772,10 @@ export default class ReactGridLayout extends React.Component<Props, State> {
 
     this.removeDroppingPlaceholder();
 
-    this.props.onDrop(layout, item, e);    
+    this.props.onDrop(layout, item, e);   
+    this.setState({
+      isDrop:true
+    }) 
   };
 
   render(): React.Element<"div"> {

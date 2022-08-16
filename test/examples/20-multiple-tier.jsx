@@ -93,7 +93,18 @@ export default class Tier extends React.PureComponent {
   // }
   onDrop(param,sourcelayout){
     console.log('sourcelayout',sourcelayout)
-    console.log('param',param,)
+    console.log('param',param)
+    // drop之后drag结束？
+    // drop如何拿到拖拽item的i
+  }
+  outLayout(sourceLayout,dragItem){  
+    const newLayout1 = sourceLayout.filter(item=>item.i!==dragItem.i)
+    const newLayout = [...this.state.layout,dragItem]
+    this.setState({
+      layout1:newLayout1,
+      layout:newLayout
+    })
+
   }
   render() {
     return (
@@ -105,6 +116,7 @@ export default class Tier extends React.PureComponent {
         isDroppable={true}
         onDrop={(...params)=>this.onDrop(params,this.state.layout)}
         isDetachable={true}
+        outLayout={this.outLayout}
         {...this.props}
       >
 
@@ -122,6 +134,8 @@ export default class Tier extends React.PureComponent {
                     onDrop={(...params)=>this.onDrop(params,this.state.layout1)}
                     isDetachable={true}
                     onDropDragOver={this.onDropDragOver}
+                    outLayout={(dragItem)=>this.outLayout(this.state.layout1,dragItem)}
+
                     {...this.props}
                   >
                     {this.state.layout1.map((citem,cindex)=>{

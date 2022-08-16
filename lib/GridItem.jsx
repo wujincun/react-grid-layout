@@ -517,6 +517,7 @@ export default class GridItem extends React.Component<Props, State> {
    * @param  {Object} callbackData  an object with node, delta and position information
    */
   onDragStop: (Event, ReactDraggableCallbackData) => void = (e, { node }) => {
+    e.stopPropagation()
     const { onDragStop } = this.props;
     if (!onDragStop) return;
 
@@ -660,8 +661,7 @@ export default class GridItem extends React.Component<Props, State> {
         ...child.props.style,
         ...this.createStyle(pos)
       },
-      draggable: isDetachable,
-
+      // draggable: isDetachable,
     });
 
     // Resizable support. This is usually on but the user can toggle it off.
